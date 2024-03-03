@@ -16,7 +16,7 @@ canvas {
     font-family: sans-serif;
     line-height: 1.35;
     font-size: 1.3em;
-    color: #666;
+    color: #ccc;
 }
 .fade-div {
     position: fixed;
@@ -35,13 +35,10 @@ canvas {
     margin-left: -250px;
     background-color: transparent;
 }
-#div2, #div3 {
+#div2, #div3, #div4 {
     top: 20%;
     width: 300px;
     left: 70%;
-}
-#div3 {
-    top: 40%;
 }
 h1 {
 	font-size: 4em;
@@ -55,18 +52,20 @@ h1 {
 }
 #cta-button {
     font-size: 2em;
-    display: block;
+    display: inline-block;
     margin-top: 60px;
-    color: #06f;
+    color: #fff;
     font-weight: 600;
     text-decoration: none;
-    border-radius: 25px;
-    padding: 20px 0;
-}
-#cta-button:hover {
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent; 
     text-fill-color: transparent;
     background-image: linear-gradient(90deg, #be22ff 10%, #ff279c 20%, #ff981f 40%);
+    padding-bottom: -10px;
+    border-bottom: 3px solid transparent;
+    border-radius: 0;
+}
+#cta-button:hover {
+	border-color: white;
 }

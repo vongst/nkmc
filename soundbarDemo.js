@@ -2,7 +2,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three/build/three.module.js
 import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/controls/OrbitControls.js';
 
 // Constants
-const initialCameraYZoom = 3
+const initialCameraYZoom = 3.2
 const initialCameraPosition = { x: 0, y: initialCameraYZoom, z: 0 };
 const sceneBackgroundColor = 0x111111;
 const soundbarRotationInitialX = 0.5;
@@ -84,7 +84,7 @@ function updateSceneBasedOnScroll(soundbar, scrollPercentage) {
     const rotationAngle = scrollPercentage * Math.PI / 2;
     soundbar.rotation.x = soundbarRotationInitialX - rotationAngle;
     
-    const panDistance = scrollPercentage * 2;
+    const panDistance = Math.min(scrollPercentage * 3, 2.5);
     camera.position.set(panDistance, initialCameraYZoom - scrollPercentage, camera.position.z);
     camera.lookAt(panDistance, soundbar.position.y, soundbar.position.z);
     
