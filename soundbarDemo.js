@@ -21,8 +21,8 @@ const material = new THREE.MeshBasicMaterial({
     opacity: 0.8
 });
 
-const controls = new THREE.OrbitControls(camera, renderer.domElement);
-controls.autoRotate = false; // Set to true if you want the object to rotate automatically
+// const controls = new THREE.OrbitControls(camera, renderer.domElement);
+// controls.autoRotate = false; // Set to true if you want the object to rotate automatically
 
 
 const soundbar = new THREE.Mesh(geometry, material);
@@ -37,7 +37,7 @@ camera.lookAt(soundbar.position);
 // Animation loop to rotate the soundbar for better visualization
 function animate() {
     requestAnimationFrame(animate);
-    controls.update();
+    // controls.update();
     renderer.render(scene, camera);
 }
 
