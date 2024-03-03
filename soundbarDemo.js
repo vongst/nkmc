@@ -14,53 +14,98 @@ const textureLoader = new THREE.TextureLoader();
 const carbonFiberTexture = textureLoader.load('carbon_fibre.jpg');
 
 const geometry = new THREE.BoxGeometry(5, 1, 0.5);
+
 const material = new THREE.MeshBasicMaterial({
     color: 0x010101, // Dark gray material
-    map: carbonFiberTexture, // Comment this out if you don't want a carbon fiber texture
+    // map: carbonFiberTexture, // Comment this out if you don't want a carbon fiber texture
     transparent: true,
-    opacity: 0.8
+    opacity: 0.7
 });
 
-// const controls = new THREE.OrbitControls(camera, renderer.domElement);
-// controls.autoRotate = false; // Set to true if you want the object to rotate automatically
+const wireframeMaterial = new THREE.MeshBasicMaterial({
+    color: 0xffffff, // White wireframe color
+    wireframe: true // Enable wireframe mode
+});
 
-
-const soundbar = new THREE.Mesh(geometry, material);
-
-// Add the mesh to the scene
+const soundbar = new THREE.Group();
+const objectMesh = new THREE.Mesh(geometry, material);
+const wireframeMesh = new THREE.Mesh(geometry, wireframeMaterial);
+soundbar.add(objectMesh, wireframeMesh);
 scene.add(soundbar);
 
-// Position the camera
-camera.position.set(0, 5, 0);
+const initialX = 0.5;
+soundbar.rotation.x = initialX;
+
+camera.position.set(0, 4, 0);
 camera.lookAt(soundbar.position);
 
-// Animation loop to rotate the soundbar for better visualization
+
+const fadeDivs = document.querySelectorAll('.fade-div');
+const fadeIntervalHeight = 1 / (fadeDivs.length + 1);
+
+// Function to create circles
+function createCircle(radius, color) {
+    const geometry = new THREE.CircleGeometry(radius, 32);
+    const material = new THREE.MeshBasicMaterial({ color: color });
+    return new THREE.Mesh(geometry, material);
+}
+
+// Create circles
+const circle1 = createCircle(0.5, 0xff0000); // Red circle
+const circle2 = createCircle(0.5, 0x0000ff); // Blue circle
+const circle3 = createCircle(0.5, 0x00ff00); // Green circle
+const circle4 = createCircle(0.5, 0xffff00); // Yellow circle
+
+// Position circles at the bottom of the rectangle
+circle1.position.set(-1, -0.75, 0);
+circle2.position.set(-0.5, -0.75, 0);
+circle3.position.set(0.5, -0.75, 0);
+circle4.position.set(1, -0.75, 0);
+scene.add(circle1);
+scene.add(circle2);
+scene.add(circle3);
+scene.add(circle4);
+
+
 function animate() {
     requestAnimationFrame(animate);
-    // controls.update();
     renderer.render(scene, camera);
 }
 
-// Start the animation loop
 animate();
 
+
 window.addEventListener('scroll', () => {
-    // Calculate the scroll percentage
     const scrollY = window.scrollY;
     const maxScroll = document.body.scrollHeight - window.innerHeight;
     const scrollPercentage = scrollY / maxScroll;
 
-
-    // // Map scroll percentage to rotation angle (from 0 to Math.PI / 2)
     const rotationAngle = scrollPercentage * Math.PI / 2;
+    soundbar.rotation.x = initialX - rotationAngle;
 
-    console.log(rotationAngle)
+    camera.position.set(0, 4 - scrollPercentage, 0);
 
-    // // Rotate the rectangle along the x-axis
-    soundbar.rotation.x = rotationAngle;
+    const panDistance = scrollPercentage * 2;
+    camera.position.x = panDistance;
 
-    // Render the scene again with the new rectangle rotation
+    const lookAtPosition = new THREE.Vector3(panDistance, soundbar.position.y, soundbar.position.z);
+    camera.lookAt(lookAtPosition);
+
     animate();
+
+    fadeDivs.forEach((div, index) => {
+        const startRange = index * fadeIntervalHeight;
+        const endRange = (index + 1) * fadeIntervalHeight;
+        const opacity = scrollPercentage >= startRange && scrollPercentage <= endRange ? 1 : 0;
+        div.style.opacity = opacity;
+    });
+
+    if (scrollPercentage === 1) {
+        scene.add(circle1);
+        scene.add(circle2);
+        scene.add(circle3);
+        scene.add(circle4);
+    } 
 });
 
 window.addEventListener('resize', () => {
