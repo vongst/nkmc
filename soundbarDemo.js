@@ -3,7 +3,7 @@ import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.121.1/exampl
 
 // Basic setup for the scene, camera, and renderer
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0xe0e0e0); // Light gray background
+scene.background = new THREE.Color(0x111111); // Light gray background
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer();
@@ -41,7 +41,7 @@ camera.lookAt(soundbar.position);
 
 
 const fadeDivs = document.querySelectorAll('.fade-div');
-const fadeIntervalHeight = 1 / (fadeDivs.length + 1);
+const fadeIntervalHeight = 1 / (fadeDivs.length);
 
 // Function to create circles
 function createCircle(radius, color) {
