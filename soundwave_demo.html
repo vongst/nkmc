@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Soundwave</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three/build/three.module.js';
+
+        // Scene setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        camera.position.z = 150;
+
+        // Global variables
+        let mouseY = 0; // Mouse position normalized to range [-1, 1]
+        const colors = ['#be22ff', '#ffffff']; // Adjusted colors array to match wave count
+        const waveParameters = [
+            { height: 10, frequency: 0.2 },
+            { height: 20, frequency: 0.4 },
+        ];
+
+        // Function to create waves
+        const lines = waveParameters.map((param, index) => {
+            const points = [];
+            const material = new THREE.LineBasicMaterial({ color: colors[index % colors.length] });
+            for (let i = 0; i <= window.innerWidth / 20; i++) {
+                const x = (i / (window.innerWidth / 20)) * window.innerWidth - window.innerWidth / 2;
+                points.push(new THREE.Vector3(x, 0, 0));
+            }
+            const geometry = new THREE.BufferGeometry().setFromPoints(points);
+            return new THREE.Line(geometry, material);
+        });
+
+        lines.forEach(line => scene.add(line));
+
+        // Handle mouse movement
+        document.addEventListener('mousemove', (event) => {
+            mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+        });
+
+        // Window resize handler
+        window.addEventListener('resize', onWindowResize, false);
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        // Animation loop for bobbing and disturbance effect
+        function animate(time) {
+            requestAnimationFrame(animate);
+
+            lines.forEach((line, index) => {
+                const { height, frequency } = waveParameters[index];
+                const positions = line.geometry.attributes.position.array;
+
+                for (let i = 0; i < positions.length; i += 3) {
+                    const x = positions[i];
+                    // Smooth sine wave adjustment based on mouseY position
+                    positions[i + 1] = Math.sin(x * 0.01 + time * 0.001) * (height + mouseY * height * 0.5);
+                }
+                line.geometry.attributes.position.needsUpdate = true;
+            });
+
+            renderer.render(scene, camera);
+        }
+
+        animate(0);
+    </script>
+</body>
+</html>
